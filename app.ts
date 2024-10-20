@@ -1,40 +1,33 @@
 import { series } from './data';
 
-function displaySeries(): void {
-  const seriesTable = document.getElementById('series-table');
-  
-  if (seriesTable) {
-    series.forEach(serie => {
-      const row = document.createElement('tr');
-      row.innerHTML = `
-        <td>${serie.id}</td>
-        <td>${serie.name}</td>
-        <td>${serie.channel}</td>
-        <td>${serie.seasons}</td>
-      `;
-      seriesTable.appendChild(row);
-    });
-  }
-}
+function loadSeries(): void {
+  const tableBody: HTMLElement | null = document.getElementById('series-table');
+  if (!tableBody) return;
 
-function calculateAverageSeasons(): number {
-  const totalSeasons = series.reduce((total, serie) => total + serie.seasons, 0);
-  return totalSeasons / series.length;
-}
+  let totalSeasons = 0;
 
-function displayAverageSeasons(): void {
-  const seriesTable = document.getElementById('series-table');
-  const avgSeasons = calculateAverageSeasons();
-  
-  if (seriesTable) {
+  series.forEach((serie) => {
     const row = document.createElement('tr');
     row.innerHTML = `
-      <td colspan="4">Average Seasons: ${avgSeasons.toFixed(2)}</td>
+      <td>${serie.name}</td>
+      <td>${serie.channel}</td>
+      <td>${serie.seasons}</td>
     `;
-    seriesTable.appendChild(row);
+    tableBody.appendChild(row);
+    totalSeasons += serie.seasons;
+  });
+
+  const averageSeasons: number = totalSeasons / series.length;
+  const averageRow: HTMLElement | null = document.getElementById('average-row');
+
+  if (averageRow) {
+    averageRow.textContent = `Seasons Average: ${averageSeasons.toFixed(2)}`;
+  } else {
+    const newRow = document.createElement('div');
+    newRow.id = 'average-row';
+    newRow.textContent = `Seasons Average: ${averageSeasons.toFixed(2)}`;
+    document.body.appendChild(newRow);
   }
 }
 
-
-displaySeries();
-displayAverageSeasons();
+document.addEventListener('DOMContentLoaded', loadSeries);

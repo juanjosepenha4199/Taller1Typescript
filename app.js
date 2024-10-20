@@ -1,28 +1,32 @@
-"use strict";
-Object.defineProperty(exports, "__esModule", { value: true });
-var data_1 = require("./data");
-function displaySeries() {
-    var seriesTable = document.getElementById('series-table');
-    if (seriesTable) {
-        data_1.series.forEach(function (serie) {
-            var row = document.createElement('tr');
-            row.innerHTML = "\n        <td>".concat(serie.id, "</td>\n        <td>").concat(serie.name, "</td>\n        <td>").concat(serie.channel, "</td>\n        <td>").concat(serie.seasons, "</td>\n      ");
-            seriesTable.appendChild(row);
-        });
+function loadSeries() {
+    const tableBody = document.getElementById('series-table');
+    if (!tableBody) return;
+  
+    let totalSeasons = 0;
+  
+    series.forEach(serie => {
+      const row = document.createElement('tr');
+      row.innerHTML = `
+        <td>${serie.name}</td>
+        <td>${serie.channel}</td>
+        <td>${serie.seasons}</td>
+      `;
+      tableBody.appendChild(row);
+      totalSeasons += serie.seasons;
+    });
+  
+    const averageSeasons = totalSeasons / series.length;
+    const averageRow = document.getElementById('average-row');
+  
+    if (averageRow) {
+      averageRow.textContent = `Seasons Average: ${averageSeasons.toFixed(2)}`;
+    } else {
+      const newRow = document.createElement('div');
+      newRow.id = 'average-row';
+      newRow.textContent = `Seasons Average: ${averageSeasons.toFixed(2)}`;
+      document.body.appendChild(newRow);
     }
-}
-function calculateAverageSeasons() {
-    var totalSeasons = data_1.series.reduce(function (total, serie) { return total + serie.seasons; }, 0);
-    return totalSeasons / data_1.series.length;
-}
-function displayAverageSeasons() {
-    var seriesTable = document.getElementById('series-table');
-    var avgSeasons = calculateAverageSeasons();
-    if (seriesTable) {
-        var row = document.createElement('tr');
-        row.innerHTML = "\n      <td colspan=\"4\">Average Seasons: ".concat(avgSeasons.toFixed(2), "</td>\n    ");
-        seriesTable.appendChild(row);
-    }
-}
-displaySeries();
-displayAverageSeasons();
+  }
+  
+  document.addEventListener('DOMContentLoaded', loadSeries);
+  
